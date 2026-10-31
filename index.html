@@ -443,9 +443,9 @@ button:hover {
 <body>
 
 <header>
-  <div class="logo">📌 NOTES <span>KNOTs</span></div>
+  <div class="logo"> NOTES <span>KNOTs</span></div>
   <button class="add-button" onclick="openModal()">
-    ＋ 新しい付箋
+    ＋ NEW
   </button>
 </header>
 
@@ -455,18 +455,18 @@ button:hover {
     <input
       type="search"
       id="search"
-      placeholder="🔍 メモを検索..."
+      placeholder="Search"
       oninput="renderNotes()"
     >
   </div>
 
   <section class="tag-section">
-    <div class="section-label">TAGS / タグ</div>
+    <div class="section-label">TAGS</div>
     <div class="tags" id="tagList"></div>
   </section>
 
   <section>
-    <div class="section-label">MY NOTES / 付箋一覧</div>
+    <div class="section-label">MY NOTES</div>
     <div class="notes-grid" id="notesGrid"></div>
   </section>
 
@@ -477,7 +477,7 @@ button:hover {
 <div class="modal" id="modal">
   <div class="modal-content">
 
-    <h2 id="modalTitle">新しい付箋</h2>
+    <h2 id="modalTitle">NEW</h2>
 
     <!-- PREVIEW MODE -->
 
@@ -497,7 +497,7 @@ button:hover {
 
       <div class="modal-actions">
         <button class="cancel-button" onclick="closeModal()">
-          閉じる
+          close
         </button>
 
         <button class="edit-button" onclick="switchToEdit()">
@@ -511,19 +511,19 @@ button:hover {
 
     <div id="editArea" style="display:none;">
 
-      <label for="titleInput">タイトル</label>
+      <label for="titleInput">title</label>
       <input
         id="titleInput"
-        placeholder="タイトルを入力..."
+        placeholder="titleを入力..."
       >
 
-      <label for="contentInput">内容</label>
+      <label for="contentInput">content</label>
       <textarea
         id="contentInput"
         placeholder="ここにメモを書こう..."
       ></textarea>
 
-      <label for="tagsInput">タグ</label>
+      <label for="tagsInput">tag</label>
       <input
         id="tagsInput"
         placeholder="例：日常, アイデア, 仕事"
@@ -533,7 +533,7 @@ button:hover {
         カンマ（,）で区切ると複数登録できるよ
       </small>
 
-      <label>付箋の色</label>
+      <label>color</label>
 
       <div class="color-options">
         <button class="color-option yellow selected"
@@ -564,7 +564,7 @@ button:hover {
           id="deleteButton"
           onclick="deleteNote()"
           style="display:none;">
-          削除
+          delete
         </button>
 
         <div class="right-actions">
@@ -572,13 +572,13 @@ button:hover {
           <button
             class="cancel-button"
             onclick="cancelEdit()">
-            キャンセル
+            cancel
           </button>
 
           <button
             class="save-button"
             onclick="saveNote()">
-            保存する
+            keep
           </button>
 
         </div>
@@ -619,7 +619,7 @@ notes = notes.map(note => ({
   updatedAt: note.updatedAt || Date.now()
 }));
 
-let selectedTag = "すべて";
+let selectedTag = "ALL";
 let selectedColor = "yellow";
 let editingId = null;
 let originalNote = null;
@@ -649,7 +649,7 @@ function getAllTags() {
 
 function renderTags() {
   const container = document.getElementById("tagList");
-  const tags = ["すべて", ...getAllTags()];
+  const tags = ["ALL", ...getAllTags()];
 
   container.innerHTML = "";
 
@@ -686,7 +686,7 @@ function renderNotes() {
   const filtered = notes.filter(note => {
 
     const matchesTag =
-      selectedTag === "すべて" ||
+      selectedTag === "ALL" ||
       note.tags.includes(selectedTag);
 
     const searchTarget = [
@@ -867,7 +867,7 @@ function showEditor() {
   const note = notes.find(n => n.id === editingId);
 
   document.getElementById("modalTitle")
-    .textContent = note ? "付箋を編集" : "新しい付箋";
+    .textContent = note ? "edit" : "NEW";
 
   document.getElementById("previewArea")
     .style.display = "none";
@@ -943,7 +943,7 @@ function saveNote() {
   ];
 
   if (!title && !content) {
-    alert("タイトルか内容を入力してね！");
+    alert("titleかcontentを入力してね！");
     return;
   }
 
@@ -994,30 +994,6 @@ function saveNote() {
     showPreview(note);
   }
 
-}
-
-// ========================
-// DELETE
-// ========================
-
-function deleteNote() {
-
-  if (!confirm("この付箋を削除する？")) {
-    return;
-  }
-
-  notes = notes.filter(n => n.id !== editingId);
-
-  if (
-    selectedTag !== "すべて" &&
-    !getAllTags().includes(selectedTag)
-  ) {
-    selectedTag = "すべて";
-  }
-
-  saveData();
-  renderAll();
-  closeModal();
 }
 
 // ========================
