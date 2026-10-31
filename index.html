@@ -1,99 +1,712 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pastel Memo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sticky Notes</title>
 
-    <link rel="stylesheet" href="style.css">
+<style>
+:root {
+  --bg: #faf8f5;
+  --text: #55515b;
+  --muted: #aaa4ae;
+  --accent: #b7a4dc;
+  --pink: #ffe0e7;
+  --yellow: #fff1b9;
+  --blue: #dceeff;
+  --green: #ddf2df;
+  --purple: #e9defb;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+header {
+  padding: 30px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: var(--accent);
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+.add-button {
+  background: var(--accent);
+  color: white;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: bold;
+  transition: .2s;
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  opacity: .85;
+}
+
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 10px 5% 60px;
+}
+
+/* Search */
+
+.search-area {
+  margin-bottom: 25px;
+}
+
+.search-area input {
+  width: 100%;
+  padding: 15px 20px;
+  border: 1px solid #eee8f0;
+  border-radius: 14px;
+  outline: none;
+  background: white;
+  font-size: 15px;
+}
+
+.search-area input:focus {
+  border-color: var(--accent);
+}
+
+/* Tags */
+
+.tag-section {
+  margin-bottom: 30px;
+}
+
+.section-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: bold;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.tag {
+  padding: 7px 15px;
+  border-radius: 20px;
+  background: white;
+  color: #88818d;
+  border: 1px solid #eee8f0;
+  font-size: 13px;
+  transition: .2s;
+}
+
+.tag.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+/* Notes */
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.note {
+  min-height: 190px;
+  padding: 20px;
+  border-radius: 4px 4px 12px 12px;
+  position: relative;
+  box-shadow: 2px 5px 12px #0000000c;
+  transition: .2s;
+  cursor: pointer;
+  animation: appear .25s ease;
+}
+
+.note:hover {
+  transform: translateY(-4px) rotate(-.5deg);
+  box-shadow: 3px 9px 18px #00000012;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.note::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 65px;
+  height: 15px;
+  background: #ffffff55;
+}
+
+.note.yellow { background: var(--yellow); }
+.note.pink { background: var(--pink); }
+.note.blue { background: var(--blue); }
+.note.green { background: var(--green); }
+.note.purple { background: var(--purple); }
+
+.note-title {
+  font-size: 17px;
+  font-weight: bold;
+  margin: 5px 0 12px;
+  overflow-wrap: anywhere;
+}
+
+.note-content {
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #696470;
+  max-height: 110px;
+  overflow: hidden;
+}
+
+.note-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 15px;
+}
+
+.note-tag {
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 10px;
+  background: #ffffff90;
+  color: #77717c;
+}
+
+.note-date {
+  font-size: 10px;
+  color: #99929c;
+  margin-top: 12px;
+}
+
+.empty {
+  text-align: center;
+  padding: 70px 10px;
+  color: var(--muted);
+  grid-column: 1 / -1;
+}
+
+.empty .symbol {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+/* Modal */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: #00000055;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 10px 40px #00000020;
+}
+
+.modal h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+}
+
+.modal label {
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  color: #99929c;
+  margin: 15px 0 7px;
+}
+
+.modal input,
+.modal textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #eee8f0;
+  border-radius: 10px;
+  font: inherit;
+  outline: none;
+  resize: vertical;
+}
+
+.modal input:focus,
+.modal textarea:focus {
+  border-color: var(--accent);
+}
+
+.modal textarea {
+  min-height: 130px;
+}
+
+.color-options {
+  display: flex;
+  gap: 12px;
+}
+
+.color-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid white;
+  outline: 1px solid #ddd;
+}
+
+.color-option.selected {
+  outline: 2px solid #888;
+}
+
+.color-option.yellow { background: var(--yellow); }
+.color-option.pink { background: var(--pink); }
+.color-option.blue { background: var(--blue); }
+.color-option.green { background: var(--green); }
+.color-option.purple { background: var(--purple); }
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.right-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cancel-button {
+  background: #f2f0f3;
+  padding: 10px 17px;
+  border-radius: 10px;
+  color: #777;
+}
+
+.save-button {
+  background: var(--accent);
+  color: white;
+  padding: 10px 22px;
+  border-radius: 10px;
+}
+
+.delete-button {
+  background: #ffe5e5;
+  color: #c66c6c;
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+@media (max-width: 500px) {
+  header {
+    padding: 22px 5%;
+  }
+  .logo {
+    font-size: 20px;
+  }
+  .notes-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .note {
+    padding: 14px;
+    min-height: 170px;
+  }
+  .note-title {
+    font-size: 15px;
+  }
+  .modal-content {
+    padding: 20px;
+  }
+}
+
+</style>
 </head>
 
 <body>
 
-    <!-- ヘッダー -->
-    <header>
-        <h1>🌸 Pastel Memo</h1>
-    </header>
+<header>
+  <div class="logo">📌 Sticky<span>Notes</span></div>
+  <button class="add-button" onclick="openModal()">＋ 新しい付箋</button>
+</header>
 
-    <main class="container">
+<main>
 
-        <!-- 左側：編集画面 -->
-        <section class="editor">
+  <div class="search-area">
+    <input
+      type="search"
+      id="search"
+      placeholder="🔍 メモを検索..."
+      oninput="renderNotes()"
+    >
+  </div>
 
-            <input
-                type="text"
-                id="title"
-                placeholder="タイトル"
-            >
+  <section class="tag-section">
+    <div class="section-label">TAGS / タグ</div>
+    <div class="tags" id="tagList"></div>
+  </section>
 
-            <div class="info">
-                <span id="createdAt">作成日：-</span>
-                <span id="updatedAt">更新日：-</span>
-            </div>
+  <section>
+    <div class="section-label">MY NOTES / 付箋一覧</div>
+    <div class="notes-grid" id="notesGrid"></div>
+  </section>
 
-            <textarea
-                id="content"
-                placeholder="ここにメモを書いてね。
+</main>
 
-例
-今日は数学を勉強した。
-#勉強 #数学"
-            ></textarea>
+<!-- 編集モーダル -->
 
-            <div class="editor-buttons">
-                <button id="newBtn">＋ 新規メモ</button>
-                <button id="deleteBtn">🗑 削除</button>
-            </div>
+<div class="modal" id="modal">
+  <div class="modal-content">
 
-        </section>
+    <h2 id="modalTitle">新しい付箋</h2>
 
-        <!-- 右側：サイドバー -->
-        <aside class="sidebar">
+    <label for="titleInput">タイトル</label>
+    <input id="titleInput" placeholder="タイトルを入力...">
 
-            <!-- タグ -->
-            <section class="tags">
+    <label for="contentInput">内容</label>
+    <textarea id="contentInput" placeholder="ここにメモを書こう..."></textarea>
 
-                <h2>🏷 タグ</h2>
+    <label for="tagsInput">タグ</label>
+    <input
+      id="tagsInput"
+      placeholder="例：日常, アイデア, 仕事"
+    >
+    <small style="color:#aaa;font-size:11px;">
+      カンマ（,）で区切ると複数登録できるよ
+    </small>
 
-                <div id="tagList">
-                    <!-- JavaScriptで生成 -->
-                </div>
+    <label>付箋の色</label>
+    <div class="color-options">
+      <button class="color-option yellow selected" data-color="yellow" onclick="selectColor('yellow')"></button>
+      <button class="color-option pink" data-color="pink" onclick="selectColor('pink')"></button>
+      <button class="color-option blue" data-color="blue" onclick="selectColor('blue')"></button>
+      <button class="color-option green" data-color="green" onclick="selectColor('green')"></button>
+      <button class="color-option purple" data-color="purple" onclick="selectColor('purple')"></button>
+    </div>
 
-            </section>
+    <div class="modal-actions">
+      <button class="delete-button" id="deleteButton" onclick="deleteNote()" style="display:none;">削除</button>
 
-            <!-- メモ一覧 -->
-            <section class="memo-list">
+      <div class="right-actions">
+        <button class="cancel-button" onclick="closeModal()">キャンセル</button>
+        <button class="save-button" onclick="saveNote()">保存する</button>
+      </div>
+    </div>
 
-                <h2>📝 メモ一覧</h2>
+  </div>
+</div>
 
-                <div id="memoList">
-                    <!-- JavaScriptで生成 -->
-                </div>
+<script>
 
-            </section>
+// ========================
+// データ管理
+// ========================
 
-        </aside>
+let notes = JSON.parse(localStorage.getItem("stickyNotes")) || [];
 
-    </main>
+let selectedTag = "すべて";
+let selectedColor = "yellow";
+let editingId = null;
 
-    <!-- テンプレート -->
-    <template id="memoTemplate">
+function saveData() {
+  localStorage.setItem("stickyNotes", JSON.stringify(notes));
+}
 
-        <div class="memo-card">
+// ========================
+// タグ管理
+// ========================
 
-            <h3 class="memo-title"></h3>
+function getAllTags() {
+  const tags = new Set();
 
-            <p class="memo-preview"></p>
+  notes.forEach(note => {
+    note.tags.forEach(tag => tags.add(tag));
+  });
 
-            <div class="memo-tags"></div>
+  return [...tags].sort((a, b) => a.localeCompare(b, "ja"));
+}
 
-            <small class="memo-date"></small>
+function renderTags() {
+  const container = document.getElementById("tagList");
+  const tags = ["すべて", ...getAllTags()];
 
-        </div>
+  container.innerHTML = "";
 
-    </template>
+  tags.forEach(tag => {
+    const button = document.createElement("button");
+    button.className = "tag" + (selectedTag === tag ? " active" : "");
+    button.textContent = tag;
 
-    <script src="script.js"></script>
+    button.onclick = () => {
+      selectedTag = tag;
+      renderTags();
+      renderNotes();
+    };
+
+    container.appendChild(button);
+  });
+}
+
+// ========================
+// メモ表示
+// ========================
+
+function renderNotes() {
+  const grid = document.getElementById("notesGrid");
+  const keyword = document.getElementById("search").value
+    .trim()
+    .toLowerCase();
+
+  grid.innerHTML = "";
+
+  const filtered = notes.filter(note => {
+
+    const matchesTag =
+      selectedTag === "すべて" ||
+      note.tags.includes(selectedTag);
+
+    const searchTarget = [
+      note.title,
+      note.content,
+      ...note.tags
+    ].join(" ").toLowerCase();
+
+    const matchesSearch = searchTarget.includes(keyword);
+
+    return matchesTag && matchesSearch;
+
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="empty">
+        <div class="symbol">📌</div>
+        <div>付箋が見つからないよ</div>
+      </div>
+    `;
+    return;
+  }
+
+  filtered.sort((a, b) => b.updatedAt - a.updatedAt);
+
+  filtered.forEach(note => {
+
+    const card = document.createElement("article");
+    card.className = `note ${note.color}`;
+
+    const title = document.createElement("div");
+    title.className = "note-title";
+    title.textContent = note.title || "無題";
+
+    const content = document.createElement("div");
+    content.className = "note-content";
+    content.textContent = note.content;
+
+    const tagContainer = document.createElement("div");
+    tagContainer.className = "note-tags";
+
+    note.tags.forEach(tag => {
+      const span = document.createElement("span");
+      span.className = "note-tag";
+      span.textContent = "#" + tag;
+      tagContainer.appendChild(span);
+    });
+
+    const date = document.createElement("div");
+    date.className = "note-date";
+    date.textContent = new Date(note.updatedAt).toLocaleString("ja-JP");
+
+    card.append(title, content, tagContainer, date);
+
+    card.onclick = () => openModal(note.id);
+
+    grid.appendChild(card);
+
+  });
+}
+
+// ========================
+// モーダル
+// ========================
+
+function openModal(id = null) {
+
+  editingId = id;
+
+  const modal = document.getElementById("modal");
+  const note = notes.find(n => n.id === id);
+
+  document.getElementById("modalTitle").textContent =
+    note ? "付箋を編集" : "新しい付箋";
+
+  document.getElementById("titleInput").value =
+    note?.title || "";
+
+  document.getElementById("contentInput").value =
+    note?.content || "";
+
+  document.getElementById("tagsInput").value =
+    note?.tags.join(", ") || "";
+
+  document.getElementById("deleteButton").style.display =
+    note ? "block" : "none";
+
+  selectedColor = note?.color || "yellow";
+
+  updateColorButtons();
+
+  modal.classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("modal").classList.remove("open");
+}
+
+function selectColor(color) {
+  selectedColor = color;
+  updateColorButtons();
+}
+
+function updateColorButtons() {
+  document.querySelectorAll(".color-option").forEach(button => {
+    button.classList.toggle(
+      "selected",
+      button.dataset.color === selectedColor
+    );
+  });
+}
+
+// ========================
+// 保存
+// ========================
+
+function saveNote() {
+
+  const title = document.getElementById("titleInput").value.trim();
+  const content = document.getElementById("contentInput").value.trim();
+
+  const tags = [
+    ...new Set(
+      document.getElementById("tagsInput").value
+        .split(/[,、]/)
+        .map(tag => tag.trim())
+        .filter(Boolean)
+    )
+  ];
+
+  if (!title && !content) {
+    alert("タイトルか内容を入力してね！");
+    return;
+  }
+
+  const now = Date.now();
+
+  if (editingId !== null) {
+
+    const note = notes.find(n => n.id === editingId);
+
+    if (note) {
+      note.title = title;
+      note.content = content;
+      note.tags = tags;
+      note.color = selectedColor;
+      note.updatedAt = now;
+    }
+
+  } else {
+
+    notes.push({
+      id: now + Math.random(),
+      title,
+      content,
+      tags,
+      color: selectedColor,
+      createdAt: now,
+      updatedAt: now
+    });
+
+  }
+
+  saveData();
+  renderTags();
+  renderNotes();
+  closeModal();
+
+}
+
+// ========================
+// 削除
+// ========================
+
+function deleteNote() {
+
+  if (!confirm("この付箋を削除する？")) return;
+
+  notes = notes.filter(n => n.id !== editingId);
+
+  if (selectedTag !== "すべて" &&
+      !getAllTags().includes(selectedTag)) {
+    selectedTag = "すべて";
+  }
+
+  saveData();
+  renderTags();
+  renderNotes();
+  closeModal();
+
+}
+
+// ========================
+// 起動
+// ========================
+
+renderTags();
+renderNotes();
+
+</script>
 
 </body>
 </html>
