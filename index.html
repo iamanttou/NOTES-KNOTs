@@ -1,1035 +1,537 @@
 
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NOTES KNOTs</title>
-
 <style>
 :root {
-  --bg: #faf8f5;
-  --text: #55515b;
-  --muted: #aaa4ae;
-  --accent: #b7a4dc;
-  --pink: #ffe0e7;
-  --yellow: #fff1b9;
-  --blue: #dceeff;
-  --green: #ddf2df;
-  --purple: #e9defb;
+  --bg: #f8f5f1;
+  --text: #45434a;
+  --muted: #918d96;
+  --accent: #a99bc8;
+  --white: #fff;
+  --shadow: 0 5px 18px rgba(70, 60, 80, .09);
 }
-
-* {
-  box-sizing: border-box;
-}
-
+* { box-sizing: border-box; }
 body {
   margin: 0;
+  padding: 32px 20px;
   background: var(--bg);
   color: var(--text);
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
-
-button {
-  border: none;
-  cursor: pointer;
-  font: inherit;
-}
-
-/* HEADER */
-
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+.app { max-width: 1050px; margin: auto; }
 header {
-  padding: 30px 5%;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
 }
-
 .logo {
-  font-size: 25px;
+  font-size: 28px;
   font-weight: 800;
   letter-spacing: 1px;
 }
-
-.logo span {
-  color: var(--accent);
-}
-
-.add-button {
-  background: var(--accent);
-  color: white;
-  padding: 12px 22px;
+.logo span { color: var(--accent); }
+.subtitle { color: var(--muted); font-size: 13px; margin-top: 5px; }
+.primary {
+  border: 0;
   border-radius: 12px;
-  font-weight: bold;
+  background: #b7a8d4;
+  color: white;
+  padding: 12px 20px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
 }
-
-.add-button:hover {
-  opacity: .8;
-  transform: translateY(-2px);
-}
-
-/* MAIN */
-
-main {
-  max-width: 1200px;
-  margin: auto;
-  padding: 10px 5% 60px;
-}
-
-/* SEARCH */
-
-.search-area {
-  margin-bottom: 25px;
-}
-
-.search-area input {
+.primary:hover { background: #a797c8; }
+.search-wrap { margin-bottom: 18px; }
+.search {
   width: 100%;
-  padding: 15px 20px;
-  border: 1px solid #eee8f0;
-  border-radius: 14px;
-  outline: none;
+  padding: 14px 16px;
+  border: 1px solid #e8e1eb;
+  border-radius: 13px;
   background: white;
-  font-size: 15px;
+  outline: none;
 }
-
-.search-area input:focus {
+.search:focus, input:focus, textarea:focus, select:focus {
   border-color: var(--accent);
 }
-
-/* TAGS */
-
-.tag-section {
-  margin-bottom: 30px;
-}
-
-.section-label {
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: bold;
-  margin-bottom: 12px;
-  letter-spacing: 1px;
-}
-
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px;
+  gap: 8px;
+  margin: 16px 0 24px;
 }
-
-.tag {
-  padding: 7px 15px;
+.tag-filter {
+  border: 1px solid #e5deeb;
   border-radius: 20px;
+  padding: 7px 13px;
   background: white;
-  color: #88818d;
-  border: 1px solid #eee8f0;
-  font-size: 13px;
-  transition: .2s;
+  color: #77717f;
+  font-size: 12px;
 }
-
-.tag.active {
-  background: var(--accent);
+.tag-filter.active {
+  background: #b7a8d4;
+  border-color: #b7a8d4;
   color: white;
-  border-color: var(--accent);
 }
-
-/* NOTES GRID */
-
 .notes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
 }
-
 .note {
   min-height: 190px;
-  padding: 20px;
-  border-radius: 4px 4px 12px 12px;
-  position: relative;
-  box-shadow: 2px 5px 12px #0000000c;
-  transition: .2s;
+  padding: 19px;
+  border-radius: 3px 3px 12px 3px;
+  box-shadow: var(--shadow);
   cursor: pointer;
-  animation: appear .25s ease;
+  transition: transform .18s ease, box-shadow .18s ease;
+  position: relative;
+  overflow-wrap: anywhere;
 }
-
 .note:hover {
   transform: translateY(-4px) rotate(-.5deg);
-  box-shadow: 3px 9px 18px #00000012;
+  box-shadow: 0 9px 22px rgba(70, 60, 80, .13);
 }
-
 .note::before {
   content: "";
   position: absolute;
-  top: -7px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 65px;
-  height: 15px;
-  background: #ffffff55;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 7px;
+  background: rgba(255,255,255,.35);
 }
-
-.yellow { background: var(--yellow); }
-.pink { background: var(--pink); }
-.blue { background: var(--blue); }
-.green { background: var(--green); }
-.purple { background: var(--purple); }
-
-.note-title {
-  font-size: 17px;
-  font-weight: bold;
-  margin: 5px 0 12px;
-  overflow-wrap: anywhere;
-}
-
-.note-content {
+.note h3 { margin: 8px 0 12px; font-size: 17px; }
+.note p {
   font-size: 13px;
-  line-height: 1.8;
+  line-height: 1.65;
   white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  color: #696470;
-  max-height: 110px;
-  overflow: hidden;
+  margin: 0 0 18px;
 }
-
-.note-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 15px;
-}
-
+.note-tags { display: flex; flex-wrap: wrap; gap: 5px; }
 .note-tag {
-  font-size: 11px;
-  padding: 4px 9px;
-  border-radius: 10px;
-  background: #ffffff90;
-  color: #77717c;
-}
-
-.note-date {
+  background: rgba(255,255,255,.55);
+  padding: 4px 8px;
+  border-radius: 12px;
   font-size: 10px;
-  color: #99929c;
-  margin-top: 12px;
 }
-
+.note-date { color: #77717f; font-size: 10px; margin-top: 13px; }
 .empty {
   text-align: center;
-  padding: 70px 10px;
   color: var(--muted);
+  padding: 65px 15px;
   grid-column: 1 / -1;
 }
-
-.empty .symbol {
-  font-size: 40px;
-  margin-bottom: 10px;
-}
-
-@keyframes appear {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* MODAL */
-
-.modal {
+.modal-backdrop {
   display: none;
   position: fixed;
   inset: 0;
+  background: rgba(45, 40, 50, .35);
   z-index: 10;
-  background: #00000055;
-  justify-content: center;
   align-items: center;
-  padding: 20px;
-  overflow-y: auto;
+  justify-content: center;
+  padding: 18px;
 }
-
-.modal.open {
-  display: flex;
-}
-
-.modal-content {
-  width: 100%;
-  max-width: 500px;
+.modal-backdrop.show { display: flex; }
+.modal {
+  background: white;
+  width: min(520px, 100%);
   max-height: 90vh;
   overflow-y: auto;
-  background: white;
-  padding: 28px;
   border-radius: 18px;
-  box-shadow: 0 10px 40px #00000020;
-}
-
-.modal h2 {
-  margin: 0 0 20px;
-  font-size: 20px;
-}
-
-/* PREVIEW */
-
-.preview-paper {
   padding: 25px;
-  border-radius: 5px 5px 12px 12px;
-  min-height: 180px;
-  margin-bottom: 20px;
-  position: relative;
-  box-shadow: 2px 5px 12px #0000000c;
+  box-shadow: 0 15px 50px rgba(0,0,0,.16);
 }
-
-.preview-paper::before {
-  content: "";
-  position: absolute;
-  top: -7px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 65px;
-  height: 15px;
-  background: #ffffff70;
-}
-
-.preview-title {
-  font-size: 21px;
-  font-weight: bold;
-  margin: 5px 0 18px;
-  overflow-wrap: anywhere;
-}
-
-.preview-content {
-  font-size: 14px;
-  line-height: 2;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  min-height: 50px;
-}
-
-.preview-date {
-  color: #99929c;
-  font-size: 11px;
-  margin-top: 20px;
-}
-
-/* FORM */
-
-.modal label {
+.modal h2 { margin: 0 0 20px; font-size: 21px; }
+.field { margin-bottom: 15px; }
+.field label {
   display: block;
   font-size: 12px;
-  font-weight: bold;
-  color: #99929c;
-  margin: 15px 0 7px;
+  font-weight: 700;
+  color: #77717f;
+  margin-bottom: 7px;
 }
-
-.modal input,
-.modal textarea {
+.field input, .field textarea, .field select {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #eee8f0;
+  border: 1px solid #e8e1eb;
   border-radius: 10px;
-  font: inherit;
+  padding: 11px 12px;
   outline: none;
-  resize: vertical;
+  background: white;
+  color: var(--text);
 }
-
-.modal input:focus,
-.modal textarea:focus {
-  border-color: var(--accent);
-}
-
-.modal textarea {
-  min-height: 130px;
-}
-
-.color-options {
-  display: flex;
-  gap: 12px;
-}
-
-.color-option {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 3px solid white;
-  outline: 1px solid #ddd;
-}
-
-.color-option.selected {
-  outline: 2px solid #888;
-}
-
-.color-option.yellow { background: var(--yellow); }
-.color-option.pink { background: var(--pink); }
-.color-option.blue { background: var(--blue); }
-.color-option.green { background: var(--green); }
-.color-option.purple { background: var(--purple); }
-
+.field textarea { min-height: 150px; resize: vertical; line-height: 1.6; }
 .modal-actions {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-top: 25px;
+  gap: 9px;
+  margin-top: 22px;
+  flex-wrap: wrap;
 }
-
-.right-actions {
-  display: flex;
-  gap: 8px;
-  margin-left: auto;
-}
-
-.cancel-button {
-  background: #f2f0f3;
-  padding: 10px 17px;
+.actions-right { display: flex; gap: 8px; margin-left: auto; }
+.secondary, .danger {
+  border: 0;
   border-radius: 10px;
-  color: #777;
-}
-
-.save-button {
-  background: var(--accent);
-  color: white;
-  padding: 10px 22px;
-  border-radius: 10px;
-}
-
-.edit-button {
-  background: var(--accent);
-  color: white;
-  padding: 12px 25px;
-  border-radius: 10px;
-}
-
-.delete-button {
-  background: #ffe5e5;
-  color: #c66c6c;
   padding: 10px 15px;
-  border-radius: 10px;
 }
-
-button:hover {
-  opacity: .82;
+.secondary { background: #f0edf3; color: #625b6b; }
+.danger { background: #f8e3e5; color: #a44f5a; }
+.preview-content {
+  white-space: pre-wrap;
+  line-height: 1.75;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  margin: 18px 0;
 }
-
-@media (max-width: 500px) {
-  header {
-    padding: 22px 5%;
-  }
-
-  .logo {
-    font-size: 19px;
-  }
-
-  .notes-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .note {
-    padding: 14px;
-    min-height: 170px;
-  }
-
-  .note-title {
-    font-size: 15px;
-  }
-
-  .modal-content {
-    padding: 20px;
-  }
+.preview-meta { color: var(--muted); font-size: 11px; margin-top: 18px; }
+.preview-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.preview-tags span {
+  background: #f0edf5;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 11px;
+}
+@media(max-width: 550px) {
+  body { padding: 22px 14px; }
+  .logo { font-size: 23px; }
+  .primary { padding: 10px 13px; }
 }
 </style>
 </head>
-
 <body>
+<div class="app">
+  <header>
+    <div>
+      <div class="logo">NOTES <span>KNOTs</span></div>
+      <div class="subtitle">Collect your thoughts. Tie them together.</div>
+    </div>
+    <button class="primary" id="addBtn">＋ New Note</button>
+  </header>
 
-<header>
-  <div class="logo"> NOTES <span>KNOTs</span></div>
-  <button class="add-button" onclick="openModal()">
-    ＋ NEW
-  </button>
-</header>
-
-<main>
-
-  <div class="search-area">
-    <input
-      type="search"
-      id="search"
-      placeholder="Search"
-      oninput="renderNotes()"
-    >
+  <div class="search-wrap">
+    <input class="search" id="searchInput" placeholder="Search notes, tags..." autocomplete="off">
   </div>
 
-  <section class="tag-section">
-    <div class="section-label">TAGS</div>
-    <div class="tags" id="tagList"></div>
-  </section>
+  <div class="tags" id="tagFilters"></div>
+  <main class="notes-grid" id="notesGrid"></main>
+</div>
 
-  <section>
-    <div class="section-label">MY NOTES</div>
-    <div class="notes-grid" id="notesGrid"></div>
-  </section>
+<div class="modal-backdrop" id="modalBackdrop">
+  <section class="modal" id="modal">
+    <h2 id="modalTitle">New Note</h2>
 
-</main>
-
-<!-- MODAL -->
-
-<div class="modal" id="modal">
-  <div class="modal-content">
-
-    <h2 id="modalTitle">NEW</h2>
-
-    <!-- PREVIEW MODE -->
-
-    <div id="previewArea" style="display:none;">
-
-      <div id="previewPaper" class="preview-paper yellow">
-
-        <div id="previewTitle" class="preview-title"></div>
-
-        <div id="previewContent" class="preview-content"></div>
-
-        <div id="previewTags" class="note-tags"></div>
-
-        <div id="previewDate" class="preview-date"></div>
-
+    <div id="editFields">
+      <div class="field">
+        <label for="noteTitle">TITLE</label>
+        <input id="noteTitle" maxlength="100" placeholder="Give your note a title">
       </div>
-
-      <div class="modal-actions">
-        <button class="cancel-button" onclick="closeModal()">
-          close
-        </button>
-
-        <button class="edit-button" onclick="switchToEdit()">
-          edit
-        </button>
+      <div class="field">
+        <label for="noteBody">CONTENT</label>
+        <textarea id="noteBody" placeholder="Write something..."></textarea>
       </div>
-
+      <div class="field">
+        <label for="noteTags">TAGS</label>
+        <input id="noteTags" placeholder="e.g. ideas, work, personal">
+      </div>
+      <div class="field">
+        <label for="noteColor">COLOR</label>
+        <select id="noteColor">
+          <option value="yellow">Butter Yellow</option>
+          <option value="pink">Soft Pink</option>
+          <option value="blue">Sky Blue</option>
+          <option value="green">Mint Green</option>
+          <option value="purple">Lavender</option>
+        </select>
+      </div>
     </div>
 
-    <!-- EDIT MODE -->
-
-    <div id="editArea" style="display:none;">
-
-      <label for="titleInput">title</label>
-      <input
-        id="titleInput"
-        placeholder="title"
-      >
-
-      <label for="contentInput">content</label>
-      <textarea
-        id="contentInput"
-        placeholder="write"
-      ></textarea>
-
-      <label for="tagsInput">tag</label>
-      <input
-        id="tagsInput"
-        placeholder="example：創作, 作曲,お絵かき"
-      >
-
-    
-      </small>
-
-      <label>color</label>
-
-      <div class="color-options">
-        <button class="color-option yellow selected"
-          data-color="yellow"
-          onclick="selectColor('yellow')"></button>
-
-        <button class="color-option pink"
-          data-color="pink"
-          onclick="selectColor('pink')"></button>
-
-        <button class="color-option blue"
-          data-color="blue"
-          onclick="selectColor('blue')"></button>
-
-        <button class="color-option green"
-          data-color="green"
-          onclick="selectColor('green')"></button>
-
-        <button class="color-option purple"
-          data-color="purple"
-          onclick="selectColor('purple')"></button>
-      </div>
-
-      <div class="modal-actions">
-
-        <button
-          class="delete-button"
-          id="deleteButton"
-          onclick="deleteNote()"
-          style="display:none;">
-          delete
-        </button>
-
-        <div class="right-actions">
-
-          <button
-            class="cancel-button"
-            onclick="cancelEdit()">
-            cancel
-          </button>
-
-          <button
-            class="save-button"
-            onclick="saveNote()">
-            keep
-          </button>
-
-        </div>
-      </div>
-
+    <div id="previewFields" style="display:none">
+      <div class="preview-content" id="previewBody"></div>
+      <div class="preview-tags" id="previewTags"></div>
+      <div class="preview-meta" id="previewMeta"></div>
     </div>
 
-  </div>
+    <div class="modal-actions">
+      <div>
+        <button class="danger" id="deleteBtn" style="display:none">Delete</button>
+      </div>
+      <div class="actions-right">
+        <button class="secondary" id="closeBtn">Close</button>
+        <button class="secondary" id="editBtn" style="display:none">✎ Edit</button>
+        <button class="primary" id="saveBtn">Save Note</button>
+      </div>
+    </div>
+  </section>
 </div>
 
 <script>
+const STORAGE_KEY = "stickyNotes";
 
-// ========================
-// DATA
-// ========================
+const colors = {
+  yellow: "#fff1a8",
+  pink: "#ffdce5",
+  blue: "#d8ecff",
+  green: "#d9f2dc",
+  purple: "#e8ddff"
+};
 
 let notes = [];
+let selectedTag = "All";
+let currentId = null;
+let modalMode = "edit";
 
-try {
-  const saved = JSON.parse(
-    localStorage.getItem("stickyNotes") || "[]"
-  );
+const $ = id => document.getElementById(id);
 
-  notes = Array.isArray(saved)
-    ? saved.filter(n => n && typeof n === "object")
-    : [];
-} catch {
-  notes = [];
+function loadNotes() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    notes = Array.isArray(saved) ? saved.map(note => ({
+      id: note.id || Date.now() + Math.random(),
+      title: note.title || "",
+      body: note.body || note.content || "",
+      tags: Array.isArray(note.tags) ? note.tags : [],
+      color: colors[note.color] ? note.color : "yellow",
+      createdAt: note.createdAt || new Date().toISOString(),
+      updatedAt: note.updatedAt || note.createdAt || new Date().toISOString()
+    })) : [];
+  } catch {
+    notes = [];
+  }
 }
 
-// v0.1との互換性を確保
-notes = notes.map(note => ({
-  ...note,
-  tags: Array.isArray(note.tags) ? note.tags : [],
-  color: ["yellow", "pink", "blue", "green", "purple"]
-    .includes(note.color) ? note.color : "yellow",
-  createdAt: note.createdAt || note.updatedAt || Date.now(),
-  updatedAt: note.updatedAt || Date.now()
-}));
-
-let selectedTag = "ALL";
-let selectedColor = "yellow";
-let editingId = null;
-let originalNote = null;
-
-function saveData() {
-  localStorage.setItem(
-    "stickyNotes",
-    JSON.stringify(notes)
-  );
+function saveToStorage() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
 }
 
-// ========================
-// TAG MANAGEMENT
-// ========================
-
-function getAllTags() {
-  const tags = new Set();
-
-  notes.forEach(note => {
-    note.tags.forEach(tag => tags.add(tag));
-  });
-
-  return [...tags].sort((a, b) =>
-    a.localeCompare(b, "ja")
-  );
-}
-
-function renderTags() {
-  const container = document.getElementById("tagList");
-  const tags = ["ALL", ...getAllTags()];
-
-  container.innerHTML = "";
-
-  tags.forEach(tag => {
-    const button = document.createElement("button");
-
-    button.className =
-      "tag" + (selectedTag === tag ? " active" : "");
-
-    button.textContent = tag;
-
-    button.onclick = () => {
-      selectedTag = tag;
-      renderTags();
-      renderNotes();
-    };
-
-    container.appendChild(button);
+function formatDate(date) {
+  return new Date(date).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
   });
 }
 
-// ========================
-// NOTES DISPLAY
-// ========================
+function render() {
+  renderTags();
 
-function renderNotes() {
-  const grid = document.getElementById("notesGrid");
+  const query = $("searchInput").value.toLowerCase().trim();
+  const filtered = notes.filter(note => {
+    const matchesTag = selectedTag === "All" || note.tags.includes(selectedTag);
+    const searchable = [note.title, note.body, ...note.tags].join(" ").toLowerCase();
+    return matchesTag && searchable.includes(query);
+  });
 
-  const keyword = document.getElementById("search")
-    .value.trim().toLowerCase();
-
+  const grid = $("notesGrid");
   grid.innerHTML = "";
 
-  const filtered = notes.filter(note => {
-
-    const matchesTag =
-      selectedTag === "ALL" ||
-      note.tags.includes(selectedTag);
-
-    const searchTarget = [
-      note.title,
-      note.content,
-      ...note.tags
-    ].join(" ").toLowerCase();
-
-    const matchesSearch =
-      searchTarget.includes(keyword);
-
-    return matchesTag && matchesSearch;
-  });
-
   if (filtered.length === 0) {
-    const empty = document.createElement("div");
-    empty.className = "empty";
-
-    const symbol = document.createElement("div");
-    symbol.className = "symbol";
-    symbol.textContent = "📌";
-
-    const message = document.createElement("div");
-    message.textContent = "付箋が見つからないよ";
-
-    empty.append(symbol, message);
-    grid.appendChild(empty);
+    grid.innerHTML = `<div class="empty">
+      <div style="font-size:30px;margin-bottom:10px">✦</div>
+      <div>${notes.length ? "No matching notes found." : "Your notebook is empty."}</div>
+      <div style="font-size:12px;margin-top:7px">Create a note and let your ideas gather here.</div>
+    </div>`;
     return;
   }
 
-  filtered.sort((a, b) =>
-    b.updatedAt - a.updatedAt
-  );
-
   filtered.forEach(note => {
-
     const card = document.createElement("article");
-    card.className = `note ${note.color}`;
+    card.className = "note";
+    card.style.background = colors[note.color] || colors.yellow;
 
-    const title = document.createElement("div");
-    title.className = "note-title";
-    title.textContent = note.title || "無題";
+    const title = document.createElement("h3");
+    title.textContent = note.title || "Untitled Note";
 
-    const content = document.createElement("div");
-    content.className = "note-content";
-    content.textContent = note.content;
+    const body = document.createElement("p");
+    body.textContent = note.body.length > 130
+      ? note.body.slice(0, 130) + "..."
+      : note.body;
 
-    const tagContainer = document.createElement("div");
-    tagContainer.className = "note-tags";
-
+    const tagBox = document.createElement("div");
+    tagBox.className = "note-tags";
     note.tags.forEach(tag => {
-      const span = document.createElement("span");
-      span.className = "note-tag";
-      span.textContent = "#" + tag;
-      tagContainer.appendChild(span);
+      const chip = document.createElement("span");
+      chip.className = "note-tag";
+      chip.textContent = "#" + tag;
+      tagBox.appendChild(chip);
     });
 
     const date = document.createElement("div");
     date.className = "note-date";
+    date.textContent = "Updated " + formatDate(note.updatedAt);
 
-    date.textContent =
-      new Date(note.updatedAt).toLocaleString("ja-JP");
-
-    card.append(
-      title,
-      content,
-      tagContainer,
-      date
-    );
-
-    // クリックするとプレビュー
-    card.onclick = () => openModal(note.id);
-
+    card.append(title, body, tagBox, date);
+    card.addEventListener("click", () => openPreview(note.id));
     grid.appendChild(card);
   });
 }
 
-// ========================
-// MODAL OPEN / CLOSE
-// ========================
+function renderTags() {
+  const container = $("tagFilters");
+  container.innerHTML = "";
 
-function openModal(id = null) {
+  const allTags = [...new Set(notes.flatMap(note => note.tags))].sort();
+  const tags = ["All", ...allTags];
 
-  editingId = id;
+  tags.forEach(tag => {
+    const button = document.createElement("button");
+    button.className = "tag-filter" + (selectedTag === tag ? " active" : "");
+    button.textContent = tag === "All" ? "All Notes" : "#" + tag;
+    button.addEventListener("click", () => {
+      selectedTag = tag;
+      render();
+    });
+    container.appendChild(button);
+  });
+}
 
-  const note = notes.find(n => n.id === id);
-
-  originalNote = note
-    ? JSON.stringify(note)
-    : null;
-
-  document.getElementById("modal")
-    .classList.add("open");
-
-  if (note) {
-    showPreview(note);
-  } else {
-    showEditor();
-  }
+function showModal() {
+  $("modalBackdrop").classList.add("show");
 }
 
 function closeModal() {
-  document.getElementById("modal")
-    .classList.remove("open");
-
-  editingId = null;
-  originalNote = null;
+  $("modalBackdrop").classList.remove("show");
+  currentId = null;
 }
 
-function cancelEdit() {
-
-  if (editingId !== null) {
-    const note = notes.find(n => n.id === editingId);
-
-    if (note) {
-      showPreview(note);
-      return;
-    }
-  }
-
-  closeModal();
+function openNewNote() {
+  currentId = null;
+  $("noteTitle").value = "";
+  $("noteBody").value = "";
+  $("noteTags").value = "";
+  $("noteColor").value = "yellow";
+  setMode("edit");
+  $("modalTitle").textContent = "New Note";
+  $("deleteBtn").style.display = "none";
+  showModal();
+  $("noteTitle").focus();
 }
 
-// ========================
-// PREVIEW MODE
-// ========================
+function openPreview(id) {
+  currentId = id;
+  const note = notes.find(item => item.id === id);
+  if (!note) return;
 
-function showPreview(note) {
-
-  document.getElementById("modalTitle")
-    .textContent = "付箋のプレビュー";
-
-  const paper = document.getElementById("previewPaper");
-
-  paper.className = `preview-paper ${note.color}`;
-
-  document.getElementById("previewTitle")
-    .textContent = note.title || "無題";
-
-  document.getElementById("previewContent")
-    .textContent = note.content;
-
-  document.getElementById("previewDate")
-    .textContent =
-      "作成：" +
-      new Date(note.createdAt).toLocaleString("ja-JP") +
-      " / 更新：" +
-      new Date(note.updatedAt).toLocaleString("ja-JP");
-
-  const tagContainer =
-    document.getElementById("previewTags");
-
-  tagContainer.innerHTML = "";
-
+  $("previewBody").textContent = note.body || "No content.";
+  $("previewTags").innerHTML = "";
   note.tags.forEach(tag => {
-
-    const span = document.createElement("span");
-
-    span.className = "note-tag";
-    span.textContent = "#" + tag;
-
-    tagContainer.appendChild(span);
+    const chip = document.createElement("span");
+    chip.textContent = "#" + tag;
+    $("previewTags").appendChild(chip);
   });
 
-  document.getElementById("previewArea")
-    .style.display = "block";
+  $("previewMeta").textContent =
+    "Created: " + formatDate(note.createdAt) +
+    "  |  Updated: " + formatDate(note.updatedAt);
 
-  document.getElementById("editArea")
-    .style.display = "none";
+  $("modalTitle").textContent = note.title || "Untitled Note";
+  $("deleteBtn").style.display = "none";
+  setMode("preview");
+  showModal();
 }
 
-// ========================
-// EDIT MODE
-// ========================
+function setMode(mode) {
+  modalMode = mode;
+  const editing = mode === "edit";
 
-function showEditor() {
-
-  const note = notes.find(n => n.id === editingId);
-
-  document.getElementById("modalTitle")
-    .textContent = note ? "edit" : "NEW";
-
-  document.getElementById("previewArea")
-    .style.display = "none";
-
-  document.getElementById("editArea")
-    .style.display = "block";
-
-  document.getElementById("titleInput").value =
-    note?.title || "";
-
-  document.getElementById("contentInput").value =
-    note?.content || "";
-
-  document.getElementById("tagsInput").value =
-    note?.tags.join(", ") || "";
-
-  selectedColor = note?.color || "yellow";
-
-  document.getElementById("deleteButton")
-    .style.display = note ? "block" : "none";
-
-  updateColorButtons();
+  $("editFields").style.display = editing ? "block" : "none";
+  $("previewFields").style.display = editing ? "none" : "block";
+  $("saveBtn").style.display = editing ? "inline-block" : "none";
+  $("editBtn").style.display = editing ? "none" : "inline-block";
+  $("modalTitle").textContent = editing ? "Edit Note" : $("modalTitle").textContent;
 }
 
-function switchToEdit() {
-  showEditor();
+function editCurrentNote() {
+  const note = notes.find(item => item.id === currentId);
+  if (!note) return;
+
+  $("noteTitle").value = note.title;
+  $("noteBody").value = note.body;
+  $("noteTags").value = note.tags.join(", ");
+  $("noteColor").value = note.color;
+
+  $("modalTitle").textContent = "Edit Note";
+  $("deleteBtn").style.display = "inline-block";
+  setMode("edit");
+  $("deleteBtn").style.display = "inline-block";
 }
-
-// ========================
-// COLOR
-// ========================
-
-function selectColor(color) {
-
-  selectedColor = color;
-
-  updateColorButtons();
-}
-
-function updateColorButtons() {
-
-  document.querySelectorAll(".color-option")
-    .forEach(button => {
-
-      button.classList.toggle(
-        "selected",
-        button.dataset.color === selectedColor
-      );
-
-    });
-}
-
-// ========================
-// SAVE
-// ========================
 
 function saveNote() {
+  const title = $("noteTitle").value.trim();
+  const body = $("noteBody").value.trim();
+  const tags = [...new Set(
+    $("noteTags").value.split(",").map(tag => tag.trim()).filter(Boolean)
+  )];
+  const color = $("noteColor").value;
+  const now = new Date().toISOString();
 
-  const title = document.getElementById("titleInput")
-    .value.trim();
-
-  const content = document.getElementById("contentInput")
-    .value.trim();
-
-  const tags = [
-    ...new Set(
-      document.getElementById("tagsInput")
-        .value
-        .split(/[,、]/)
-        .map(tag => tag.trim())
-        .filter(Boolean)
-    )
-  ];
-
-  if (!title && !content) {
-    alert("titleかcontentを入力してね！");
+  if (!title && !body) {
+    alert("Please enter a title or some content.");
     return;
   }
 
-  const now = Date.now();
-
-  if (editingId !== null) {
-
-    const note = notes.find(n => n.id === editingId);
-
+  if (currentId !== null) {
+    const note = notes.find(item => item.id === currentId);
     if (!note) return;
-
     note.title = title;
-    note.content = content;
+    note.body = body;
     note.tags = tags;
-    note.color = selectedColor;
+    note.color = color;
     note.updatedAt = now;
-
-    saveData();
-    renderAll();
-
-    originalNote = JSON.stringify(note);
-
-    showPreview(note);
-
   } else {
-
-    const note = {
-      id: crypto.randomUUID
-        ? crypto.randomUUID()
-        : String(now) + Math.random(),
-
+    const newNote = {
+      id: Date.now() + Math.random(),
       title,
-      content,
+      body,
       tags,
-      color: selectedColor,
+      color,
       createdAt: now,
       updatedAt: now
     };
-
-    notes.push(note);
-
-    editingId = note.id;
-    originalNote = JSON.stringify(note);
-
-    saveData();
-    renderAll();
-
-    showPreview(note);
+    notes.unshift(newNote);
+    currentId = newNote.id;
   }
 
+  saveToStorage();
+  render();
+  closeModal();
 }
 
-// ========================
-// RENDER ALL
-// ========================
+function deleteCurrentNote() {
+  if (currentId === null) return;
+  if (!confirm("Are you sure you want to delete this note?")) return;
 
-function renderAll() {
-  renderTags();
-  renderNotes();
+  notes = notes.filter(note => note.id !== currentId);
+  saveToStorage();
+  render();
+  closeModal();
 }
 
-// ========================
-// KEYBOARD / BACKDROP
-// ========================
+$("addBtn").addEventListener("click", openNewNote);
+$("searchInput").addEventListener("input", render);
+$("closeBtn").addEventListener("click", closeModal);
+$("saveBtn").addEventListener("click", saveNote);
+$("editBtn").addEventListener("click", editCurrentNote);
+$("deleteBtn").addEventListener("click", deleteCurrentNote);
 
-document.getElementById("modal").addEventListener(
-  "click",
-  event => {
-    if (event.target.id === "modal") {
-      closeModal();
-    }
-  }
-);
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    closeModal();
-  }
+$("modalBackdrop").addEventListener("click", event => {
+  if (event.target === $("modalBackdrop")) closeModal();
 });
 
-// ========================
-// START
-// ========================
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeModal();
+});
 
-renderAll();
-
+loadNotes();
+render();
 </script>
-
 </body>
 </html>
